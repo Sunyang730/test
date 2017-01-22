@@ -43,11 +43,14 @@
 
 		<script type="text/javascript" charset="utf-8" async defer>
 			$(function() {
-				var leadFormStorage = [];
+				var LEAD_FORM_STORAGE_KEY = 'leadFormStorage'
+				var leadFormStorage = JSON.parse(localStorage.getItem(LEAD_FORM_STORAGE_KEY)) || [];
+
 
 
 				$('#submitBtn').on('click', function( event ) {
 					leadFormStorage.push($('#leadForm').serialize());
+					localStorage.setItem(LEAD_FORM_STORAGE_KEY, JSON.stringify(leadFormStorage));
 				});
 
 				setInterval(function() {
