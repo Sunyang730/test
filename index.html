@@ -13,7 +13,7 @@
 		<!--  NOTE: Please add the following <FORM> element to your page.             -->
 		<!--  ----------------------------------------------------------------------  -->
 
-		<form id="leadForm" action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">
+		<form id="leadForm">
 
 		<input type=hidden name="oid" value="00D210000000dc6">
 		<!-- <input type=hidden name="retURL" value="http://www.google.com"> -->
@@ -45,17 +45,15 @@
 			$(function() {
 				var leadFormStorage = [];
 				$('#submitBtn').on('click', function( event ) {
-					leadFormStorage.push($('#leadForm').clone());
+					leadFormStorage.push($('#leadForm').serialize());
 				});
 
 				setInterval(function() {
 					if (leadFormStorage.length > 0) {
-						var leadForm = leadFormStorage.pop()
-						console.log(leadForm.serialize());
-						leadForm.submit();
-
+						var leadForm = leadFormStorage.pop();
+						$.post('https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', leadForm);
 					}
-				}, 2000)
+				}, 5000)
 			});
 		</script>
 	</body>
