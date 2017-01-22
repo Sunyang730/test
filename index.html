@@ -44,16 +44,61 @@
 		<script type="text/javascript" charset="utf-8" async defer>
 			$(function() {
 				var leadFormStorage = [];
+
+
 				$('#submitBtn').on('click', function( event ) {
 					leadFormStorage.push($('#leadForm').serialize());
 				});
 
 				setInterval(function() {
 					if (leadFormStorage.length > 0) {
-						var leadForm = leadFormStorage.pop();
-						$.post('https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', leadForm);
+						var serializeLeadFormInfo = leadFormStorage.pop();
+						var formObject = createFormObject(serializeLeadFormInfo);
+						submitForm(formObject);
 					}
-				}, 5000)
+				}, 50000)
+
+
+				function submitForm(formObject) {
+					var form = document.createElement('form');
+					var url = "https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8";
+					var method = "POST";
+
+					form.setAttribute("method", method);
+					form.setAttribute("action", url);
+
+					var retUrlInput = document.createElement("input");
+          retUrlInput.setAttribute("type", "hidden");
+          retUrlInput.setAttribute("name", "retURL");
+          retUrlInput.setAttribute("value", "https://sunyang730.github.io/test/");
+          form.appendChild(retUrlInput)
+
+					for(key in formObject) {
+						if(formObject.hasOwnProperty(key)) {
+	            var hiddenField = document.createElement("input");
+	            hiddenField.setAttribute("type", "hidden");
+	            hiddenField.setAttribute("name", key);
+	            hiddenField.setAttribute("value", formObject[key]);
+
+	            form.appendChild(hiddenField);
+						}
+					}
+
+			    document.body.appendChild(form);
+			    form.submit();
+			    document.body.removeChild(form);
+				}
+
+				function createFormObject(string) {
+					var result = {};
+					var serializeStringInArray = string.split('&');
+					serializeStringInArray.forEach(function(KeyAndValue) {
+						var keyAndValueSplit = KeyAndValue.split('=');
+						result[keyAndValueSplit[0]] = keyAndValueSplit[1];
+					});
+
+					return result
+				}
 			});
 		</script>
 	</body>
